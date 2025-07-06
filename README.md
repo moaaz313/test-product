@@ -6,9 +6,7 @@ It includes a dynamic price range filter and clean UI with loading indicators.
 ---
 
 ## 🎥 Demo
-
-Watch the screen recording here:  
-➡️ [Click to view the demo](https://drive.google.com/file/d/1rJDcT0DHwkkqaxaY9Tj7uxfm0kjM3lGz/view?usp=sharing)
+https://github.com/user-attachments/assets/05677256-f07d-42fe-81fd-19c5eca84078
 
 ---
 
