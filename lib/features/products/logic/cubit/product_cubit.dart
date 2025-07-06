@@ -17,7 +17,6 @@ class ProductCubit extends Cubit<ProductState> {
     }
   }
 
-  // Fetch products by price range
   Future<void> filterProductsByRange(int minPrice, int maxPrice) async {
     emit(ProductLoading());
     try {

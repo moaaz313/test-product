@@ -50,7 +50,7 @@ class _PriceSliderState extends State<PriceSlider> {
                 color: Colors.black87,
               ),
             ),
-            const SizedBox(height: 12),
+            const SizedBox(height: 6),
             RangeSlider(
               values: _values,
               min: widget.min,
@@ -69,7 +69,6 @@ class _PriceSliderState extends State<PriceSlider> {
                 widget.onChanged(newRange);
               },
             ),
-            const SizedBox(height: 8),
             Center(
               child: Text(
                 'Selected Range: \$${_values.start.toStringAsFixed(0)} - \$${_values.end.toStringAsFixed(0)}',

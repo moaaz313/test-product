@@ -35,6 +35,7 @@ class ProductItem extends StatelessWidget {
                     return Shimmer.fromColors(
                       baseColor: Colors.grey.shade300,
                       highlightColor: Colors.grey.shade200,
+                      
 
                       child: Container(color: Colors.white),
                     );
