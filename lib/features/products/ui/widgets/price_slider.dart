@@ -29,41 +29,59 @@ class _PriceSliderState extends State<PriceSlider> {
 
   @override
   Widget build(BuildContext context) {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        const Text(
-          'Price Range',
-          style: TextStyle(fontWeight: FontWeight.w600, fontSize: 16),
-        ),
-        RangeSlider(
-          values: _values,
-          min: widget.min,
-          max: widget.max,
-          divisions: 10,
-          labels: RangeLabels(
-            _values.start.toStringAsFixed(0),
-            _values.end.toStringAsFixed(0),
-          ),
-          onChanged: (newRange) {
-            setState(() {
-              _values = newRange;
-            });
-            widget.onChanged(newRange);
-          },
-        ),
-        Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+    return Card(
+      margin: const EdgeInsets.only(bottom: 16),
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(16),
+      ),
+      elevation: 1,
+      color: Colors.grey.shade100,
+
+      child: Padding(
+        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 5),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Text('\$${widget.min.toStringAsFixed(0)}'),
-            Text(
-              'Selected: \$${_values.start.toStringAsFixed(0)} - \$${_values.end.toStringAsFixed(0)}',
-              style: const TextStyle(fontWeight: FontWeight.w500),
+            const Text(
+              'Filter by Price',
+              style: TextStyle(
+                fontWeight: FontWeight.w600,
+                fontSize: 16,
+                color: Colors.black87,
+              ),
             ),
-            Text('\$${widget.max.toStringAsFixed(0)}'),
+            const SizedBox(height: 12),
+            RangeSlider(
+              values: _values,
+              min: widget.min,
+              max: widget.max,
+              divisions: 20,
+              activeColor: Colors.teal,
+              inactiveColor: Colors.teal.withOpacity(0.2),
+              labels: RangeLabels(
+                '\$${_values.start.toStringAsFixed(0)}',
+                '\$${_values.end.toStringAsFixed(0)}',
+              ),
+              onChanged: (newRange) {
+                setState(() {
+                  _values = newRange;
+                });
+                widget.onChanged(newRange);
+              },
+            ),
+            const SizedBox(height: 8),
+            Center(
+              child: Text(
+                'Selected Range: \$${_values.start.toStringAsFixed(0)} - \$${_values.end.toStringAsFixed(0)}',
+                style: const TextStyle(
+                  fontWeight: FontWeight.w500,
+                  color: Colors.black54,
+                ),
+              ),
+            ),
           ],
         ),
-      ],
+      ),
     );
   }
 }

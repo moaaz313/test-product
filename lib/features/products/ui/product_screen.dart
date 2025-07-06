@@ -1,7 +1,10 @@
 import 'package:flutter/material.dart';
-import 'package:test_product/features/products/data/model/product_model.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:test_product/features/products/logic/cubit/product_cubit.dart';
+import 'package:test_product/features/products/logic/cubit/product_state.dart';
 import 'widgets/product_item.dart';
 import 'widgets/price_slider.dart';
+import 'package:shimmer/shimmer.dart';
 
 class ProductScreen extends StatefulWidget {
   const ProductScreen({super.key});
@@ -13,42 +16,15 @@ class ProductScreen extends StatefulWidget {
 class _ProductScreenState extends State<ProductScreen> {
   RangeValues _currentRange = const RangeValues(100, 1000);
 
-  // بيانات وهمية مؤقتة
-  final List<ProductModel> allProducts = [
-    ProductModel(
-      id: '1',
-      name: 'Denim Jacket',
-      imageUrl: 'https://via.placeholder.com/150',
-      price: 600,
-    ),
-    ProductModel(
-      id: '2',
-      name: 'Leather Bag',
-      imageUrl: 'https://via.placeholder.com/150',
-      price: 850,
-    ),
-    ProductModel(
-      id: '3',
-      name: 'Sneakers',
-      imageUrl: 'https://via.placeholder.com/150',
-      price: 400,
-    ),
-    ProductModel(
-      id: '4',
-      name: 'Silk Scarf',
-      imageUrl: '',
-      price: 150,
-    ),
-  ];
+  @override
+  void initState() {
+    super.initState();
+
+    context.read<ProductCubit>().fetchAllProducts();
+  }
 
   @override
   Widget build(BuildContext context) {
-    // فلترة المنتجات بالرنج
-    final filteredProducts = allProducts.where((product) {
-      return product.price >= _currentRange.start &&
-          product.price <= _currentRange.end;
-    }).toList();
-
     return Scaffold(
       appBar: AppBar(
         title: const Text('Products'),
@@ -58,7 +34,6 @@ class _ProductScreenState extends State<ProductScreen> {
         padding: const EdgeInsets.all(16),
         child: Column(
           children: [
-            // سلايدر
             PriceSlider(
               min: 100,
               max: 1000,
@@ -67,22 +42,54 @@ class _ProductScreenState extends State<ProductScreen> {
                 setState(() {
                   _currentRange = val;
                 });
+                context.read<ProductCubit>().filterProductsByRange(
+                  val.start.round(),
+                  val.end.round(),
+                );
               },
             ),
-
-            const SizedBox(height: 12),
-
-            // المنتجات
             Expanded(
-              child: ListView.builder(
-                itemCount: filteredProducts.length,
-                itemBuilder: (_, index) =>
-                    ProductItem(product: filteredProducts[index]),
+              child: BlocBuilder<ProductCubit, ProductState>(
+                builder: (context, state) {
+                  if (state is ProductLoading) {
+                    return _buildShimmer();
+                  } else if (state is ProductLoaded) {
+                    final products = state.products;
+                    if (products.isEmpty) {
+                      return const Center(child: Text('No products found.'));
+                    }
+                    return ListView.builder(
+                      itemCount: products.length,
+                      itemBuilder: (_, index) =>
+                          ProductItem(product: products[index]),
+                    );
+                  } else if (state is ProductError) {
+                    return Center(child: Text(state.message));
+                  }
+                  return const SizedBox.shrink();
+                },
               ),
             ),
           ],
         ),
       ),
+    );
+  }
+
+  Widget _buildShimmer() {
+    return ListView.builder(
+      itemCount: 6,
+      itemBuilder: (_, index) {
+        return Shimmer.fromColors(
+          baseColor: Colors.grey.shade300,
+          highlightColor: Colors.grey.shade100,
+          child: Container(
+            margin: const EdgeInsets.symmetric(vertical: 8),
+            height: 100,
+            color: Colors.white,
+          ),
+        );
+      },
     );
   }
 }
